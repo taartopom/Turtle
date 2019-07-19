@@ -14,6 +14,8 @@ import android.view.View;
  * Creation par Sandra le 19/07/19
  * @version 1.0
  * cette class permet de faire nager notre belle tortue de haut en bas
+ * permet de deplacer sa bonne nourriture de droite a gauche
+ * permet de deplacer les dechets de l'ocean de droite a gauche
  */
 
 public class NagerView extends View {
@@ -25,11 +27,18 @@ public class NagerView extends View {
 
     private int canvasWidth, canvasHeight;
 
+    private Bitmap bouffe;
+    private int bouffeX, bouffeY, bouffeSpeed;
+
+    private Bitmap notbouffe;
+    private int notbouffeX, notbouffeY, notbouffeSpeed;
+
     private boolean touch = false;
 
     private Bitmap gamebackground;
     private Paint scorePaint =  new Paint();
     private Bitmap vie[] =  new Bitmap[2];
+
 
     /**
      * pour gerer la premier tortue sur la vue
@@ -45,16 +54,23 @@ public class NagerView extends View {
         //affichage de l'ecran de fond
         gamebackground = BitmapFactory.decodeResource(getResources(), R.drawable.gamebackground);
 
+        //affichage de sa bonne et sa mauvaise nourriture
+        bouffe =  BitmapFactory.decodeResource(getResources(),R.drawable.bouffe);
+        notbouffe =  BitmapFactory.decodeResource(getResources(),R.drawable.notbouffe);
+
         // creation du score avec style
         scorePaint.setColor(Color.WHITE);
         scorePaint.setTextSize(70);
         scorePaint.setTypeface(Typeface.DEFAULT_BOLD);
         scorePaint.setAntiAlias(true);
 
-        //gestion des coeurs de vie
+        //affichage des coeurs de vie
         vie[0] =  BitmapFactory.decodeResource(getResources(), R.drawable.heartfull);
         vie[1] =  BitmapFactory.decodeResource(getResources(), R.drawable.heartempty);
 
+        // gestion des tortues ( normal et red pour un tortue blessee)
+
+        turtleY = 500;
     }
 
     @Override
@@ -77,9 +93,30 @@ public class NagerView extends View {
         if(turtleY > maxTurtleY){
             turtleY =  maxTurtleY;
         }
-        if(touch){
 
+        turtleSpeed =  turtleSpeed +2;
+
+        if(touch){
+            canvas.drawBitmap(turtle[1],turtleX,turtleY,null);
+            touch =  false;
         }
+        else{
+            canvas.drawBitmap(turtle[0], turtleX, turtleY, null);
+        }
+        // pour le deplacement de la bonne nourriture
+        bouffeX =  bouffeX - bouffeSpeed;
+        if (bouffeX < 0){
+            bouffeX =  canvasWidth + 21;
+            bouffeY =  (int) Math.floor(Math.random() * (maxTurtleY - minTurtleY) + minTurtleY);
+        }
+
+        public boolean eatBouffeChecker(int x, int y){
+            if(turtleX < x && x < (turtleX + turtle[0].getWidth()) && turtleY < y && y < ( turtleY + turtle[0].getHeight())){
+               // return true;
+            }
+          //  return false;
+        }
+
 
         // taille du score sur la vue
         canvas.drawText("Score : ",20, 60, scorePaint);
@@ -100,4 +137,5 @@ public class NagerView extends View {
         }
         return true;
     }
+
 }
