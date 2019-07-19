@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Creation par Sandra le 19/07/19
@@ -25,20 +26,21 @@ public class NagerView extends View {
     private int turtleY;
     private int turtleSpeed;
 
-    private int canvasWidth, canvasHeight;
-
     private Bitmap bouffe;
-    private int bouffeX, bouffeY, bouffeSpeed;
+    private int bouffeX, bouffeY, bouffeSpeed = 16;
 
     private Bitmap notbouffe;
-    private int notbouffeX, notbouffeY, notbouffeSpeed;
+    private int notbouffeX, notbouffeY, notbouffeSpeed = 20;
 
-    private boolean touch = false;
+    private int score, lifeTurtle;
+
 
     private Bitmap gamebackground;
     private Paint scorePaint =  new Paint();
     private Bitmap vie[] =  new Bitmap[2];
 
+    private int canvasWidth, canvasHeight;
+    private boolean touch = false;
 
     /**
      * pour gerer la premier tortue sur la vue
@@ -68,9 +70,12 @@ public class NagerView extends View {
         vie[0] =  BitmapFactory.decodeResource(getResources(), R.drawable.heartfull);
         vie[1] =  BitmapFactory.decodeResource(getResources(), R.drawable.heartempty);
 
-        // gestion des tortues ( normal et red pour un tortue blessee)
 
+        //parametre par default
         turtleY = 500;
+        score =  0;
+        lifeTurtle = 3;
+
     }
 
     @Override
@@ -103,6 +108,33 @@ public class NagerView extends View {
         else{
             canvas.drawBitmap(turtle[0], turtleX, turtleY, null);
         }
+/*-----------------------------------------------------------------------------------------------*/
+        /**
+         * les conditions du jeu
+         * 1- si elle mange de la bonne bouffe , elle 10points
+         * 2.a- si elle mange des dechets elle permet 20point
+         * 2.b- si elle se retrouve inférieur a 0point, elle perd une vie et retourne a 0.
+         * 2.c- si elle perd tous ses coeurs , la partie est fini
+         */
+        if (eatBouffeChecker(bouffeX, bouffeY)){
+            score =  score + 10;
+            bouffeX = - 100;
+        }
+        if(eatBadBouffeChercker(notbouffeX,notbouffeY)){
+            score =  score - 20;
+            notbouffeX = -100;
+            if (score < 0){
+                lifeTurtle--;
+                if(lifeTurtle == 0){
+                    Toast.makeText(getContext(),"Game Over", Toast.LENGTH_SHORT).show();
+                }
+                score = 0;
+            }
+
+        }
+/*-----------------------------------------------------------------------------------------------*/
+        //Les interactions sur la vue
+/*-----------------------------------------------------------------------------------------------*/
         // pour le deplacement de la bonne nourriture
         bouffeX =  bouffeX - bouffeSpeed;
         if (bouffeX < 0){
@@ -110,24 +142,47 @@ public class NagerView extends View {
             bouffeY =  (int) Math.floor(Math.random() * (maxTurtleY - minTurtleY) + minTurtleY);
         }
 
-        public boolean eatBouffeChecker(int x, int y){
-            if(turtleX < x && x < (turtleX + turtle[0].getWidth()) && turtleY < y && y < ( turtleY + turtle[0].getHeight())){
-               // return true;
-            }
-          //  return false;
+        //pour le deplacement des dechets
+        notbouffeX = notbouffeX - notbouffeSpeed;
+        if (notbouffeX <0){
+            notbouffeX = canvasWidth + 21;
+            notbouffeY = (int)Math.floor((Math.random()* (maxTurtleY - minTurtleY) + minTurtleY));
         }
 
+        // Affichage du score
+        canvas.drawText("Score : "+ score,20, 60, scorePaint);
 
-        // taille du score sur la vue
-        canvas.drawText("Score : ",20, 60, scorePaint);
-
-        //positionnement des coeurs sur la vue
+        /*
+        //positionnement des coeurs les uns a coté des autres sur la vue avant la boucle
         canvas.drawBitmap(vie[0], 500,10,null);
         canvas.drawBitmap(vie[0], 550,10,null);
         canvas.drawBitmap(vie[0], 600,10,null);
+        */
 
+        //la perte des coeurs dans une boucle for pour
+        for (int i=0; i<3; i++ ){
+            int x  = (int)(580 + vie[0].getWidth() * 1.5 *1);
+            int y = 30;
+            if (i< lifeTurtle){
+                canvas.drawBitmap(vie[0], x, y, null);
+            }
+            else{
+                canvas.drawBitmap(vie[1], x, y, null);
+            }
+        }
+
+        // taille du score sur la vue
+        canvas.drawText("Score : "+ score,20, 60, scorePaint);
+
+
+
+        canvas.drawBitmap(bouffe, bouffeX, bouffeY, null);
+        canvas.drawBitmap(notbouffe, notbouffeX, notbouffeY, null);
 
     }
+/*-----------------------------------------------------------------------------------------------*/
+    //Evenement
+/*-----------------------------------------------------------------------------------------------*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -136,6 +191,35 @@ public class NagerView extends View {
             turtleSpeed =  -22;
         }
         return true;
+    }
+/*-----------------------------------------------------------------------------------------------*/
+    //Methodes
+/*-----------------------------------------------------------------------------------------------*/
+
+    //pour le fait de manger de la bonne bouffe
+
+    /**
+     * cette methodes permet de detecter la position de notre tortue et de sa nourriture
+     * @return true si la position est identique
+     * @return false si non, donc notre tortue a rate sa proie
+     */
+    public boolean eatBouffeChecker(int x,int y){
+        if(turtleX < x && x < (turtleX + turtle[0].getWidth()) && turtleY < y && y < ( turtleY + turtle[0].getHeight())){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * cette methodes detecte la position de la tortue et des déchets l'eau
+     * @return true si la tortue a mangé un déchet
+     * @return false si elle l'a évité
+     */
+    public boolean eatBadBouffeChercker(int x, int y){
+        if(turtleX < x && x < (turtleX + turtle[0].getHeight()) && turtleY < y && y < ( turtleY + turtle[0].getHeight())){
+            return true;
+        }
+        return  false;
     }
 
 }
