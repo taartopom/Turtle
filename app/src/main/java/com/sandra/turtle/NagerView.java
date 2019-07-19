@@ -1,6 +1,7 @@
 package com.sandra.turtle;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -127,6 +128,10 @@ public class NagerView extends View {
                 lifeTurtle--;
                 if(lifeTurtle == 0){
                     Toast.makeText(getContext(),"Game Over", Toast.LENGTH_SHORT).show();
+                    Intent gameOverIntent = new Intent(getContext(),GameOverActivity.class);
+                    gameOverIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    getContext().startActivity(gameOverIntent);
+
                 }
                 score = 0;
             }
@@ -152,18 +157,18 @@ public class NagerView extends View {
         // Affichage du score
         canvas.drawText("Score : "+ score,20, 60, scorePaint);
 
-        /*
-        //positionnement des coeurs les uns a coté des autres sur la vue avant la boucle
+
+        /*//positionnement des coeurs les uns a coté des autres sur la vue avant la boucle
         canvas.drawBitmap(vie[0], 500,10,null);
         canvas.drawBitmap(vie[0], 550,10,null);
-        canvas.drawBitmap(vie[0], 600,10,null);
-        */
+        canvas.drawBitmap(vie[0], 600,10,null);*/
+
 
         //la perte des coeurs dans une boucle for pour
         for (int i=0; i<3; i++ ){
-            int x  = (int)(580 + vie[0].getWidth() * 1.5 *1);
-            int y = 30;
-            if (i< lifeTurtle){
+            int x  = (int)(580 + vie[0].getWidth() * 1.5 * 1);
+            int y = 10;
+            if (i < lifeTurtle){
                 canvas.drawBitmap(vie[0], x, y, null);
             }
             else{
