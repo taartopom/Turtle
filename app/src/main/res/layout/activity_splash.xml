@@ -6,17 +6,18 @@
     android:layout_height="match_parent"
     android:background="@drawable/acceuilbackground"
     tools:context=".SplashActivity">
+
     <TextView
         android:id="@+id/textAcceuil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="La tortue géniale"
-        android:textAlignment="center"
-
         android:layout_alignParentTop="true"
         android:layout_marginTop="70dp"
+
+        android:text="Aquatic turtle"
+        android:textAlignment="center"
         android:textColor="@color/colorAccent"
-        android:textStyle="bold"
-        android:textSize="34sp"/>
+        android:textSize="34sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

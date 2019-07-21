@@ -114,7 +114,7 @@ public class NagerView extends View {
          * les conditions du jeu
          * 1- si elle mange de la bonne bouffe , elle 10points
          * 2.a- si elle mange des dechets elle permet 20point
-         * 2.b- si elle se retrouve inférieur a 0point, elle perd une vie et retourne a 0.
+         * 2.b- si elle mange des dechets elle perd une vie ( coeur)
          * 2.c- si elle perd tous ses coeurs , la partie est fini
          */
         if (eatBouffeChecker(bouffeX, bouffeY)){
@@ -124,16 +124,15 @@ public class NagerView extends View {
         if(eatBadBouffeChercker(notbouffeX,notbouffeY)){
             score =  score - 20;
             notbouffeX = -100;
-            if (score < 0){
-                lifeTurtle--;
-                if(lifeTurtle == 0){
-                    Toast.makeText(getContext(),"Game Over", Toast.LENGTH_SHORT).show();
-                    Intent gameOverIntent = new Intent(getContext(),GameOverActivity.class);
-                    gameOverIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    getContext().startActivity(gameOverIntent);
+            lifeTurtle--;
+            if(lifeTurtle == 0){
+                Toast.makeText(getContext(),"Game Over", Toast.LENGTH_SHORT).show();
 
-                }
-                score = 0;
+                Intent gameOverIntent = new Intent(getContext(),GameOverActivity.class);
+                gameOverIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                gameOverIntent.putExtra("score", score);
+                getContext().startActivity(gameOverIntent);
+
             }
 
         }
