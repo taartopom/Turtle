@@ -121,9 +121,10 @@ public class NagerView extends View {
             score =  score + 10;
             bouffeX = - 100;
         }
-        if(eatBadBouffeChercker(notbouffeX,notbouffeY)){
+
+        if(eatBouffeChecker(notbouffeX,notbouffeY)){
             score =  score - 20;
-            notbouffeX = -100;
+            notbouffeX = - 100;
             lifeTurtle--;
             if(lifeTurtle == 0){
                 Toast.makeText(getContext(),"Game Over", Toast.LENGTH_SHORT).show();
@@ -134,6 +135,7 @@ public class NagerView extends View {
                 getContext().startActivity(gameOverIntent);
 
             }
+
 
         }
 /*-----------------------------------------------------------------------------------------------*/
@@ -219,7 +221,7 @@ public class NagerView extends View {
      * @return true si la tortue a mangé un déchet
      * @return false si elle l'a évité
      */
-    public boolean eatBadBouffeChercker(int x, int y){
+   public boolean eatBadBouffeChercker(int x, int y){
         if(turtleX < x && x < (turtleX + turtle[0].getHeight()) && turtleY < y && y < ( turtleY + turtle[0].getHeight())){
             return true;
         }
