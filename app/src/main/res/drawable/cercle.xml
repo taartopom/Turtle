@@ -1,0 +1,10 @@
+<!--cette ressource permet de styliser la croix pour quitter le pop up  -->
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="oval" xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke android:width="2dp"
+        android:color="@color/colorAdd1"
+        >
+
+    </stroke>
+
+</shape>
